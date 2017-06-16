@@ -16,6 +16,7 @@ environment:
       ICU_LINKAGE: static
       COVERITY_BUILD_CANDIDATE: True
       QTDIR: C:\Qt\5.8\msvc2015
+      VCLIBS: VCRUNTIME140.dll MSVCP140.dll
 
 configuration:
   - release
@@ -24,6 +25,7 @@ install:
   # Set some vars
   - '%QTDIR%\bin\qtenv2.bat'
   - qmake -v
+  - set VCLIBDIR=%WINDIR%\SysWOW64 # Find vclibs
   - set QTDIR
   - if %QTDIR:_64=%==%QTDIR% ( set ARCH=x86 ) else set ARCH=x64
   - if %QTDIR:msvc=%==%QTDIR% g++ --version
@@ -39,7 +41,34 @@ before_build:
   - qmake %APPVEYOR_BUILD_FOLDER%/app/rtkuser-qt -o %APPVEYOR_BUILD_FOLDER%-build -Wall -Wlogic -Wparser CONFIG+=%CONFIGURATION%
 
 build_script:
-  # Compile it and check for .exe
+  - set PATH=%PATH:C:\Program Files (x86)\Git\bin;=%
+  - set PATH=C:\MinGW\bin;%PATH%
+  - cd C:\MinGW\bin
+  - ls
+  - cd "%APPVEYOR_BUILD_FOLDER%\app\convbin\gcc"
+  - gcc --version
+  - mingw32-make CC=gcc
+  - ls
+  - copy convbin.exe %APPVEYOR_BUILD_FOLDER%-build\%CONFIGURATION%\convbin.exe
+
+  - cd "%APPVEYOR_BUILD_FOLDER%\app\rnx2rtkp\gcc"
+  - gcc --version
+  - mingw32-make CC=gcc
+  - ls
+  - copy rnx2rtkp.exe %APPVEYOR_BUILD_FOLDER%-build\%CONFIGURATION%\rnx2rtkp.exe
+
+  - cd "%APPVEYOR_BUILD_FOLDER%\app\pos2kml\gcc"
+  - gcc --version
+  - mingw32-make CC=gcc
+  - ls
+  - copy pos2kml.exe %APPVEYOR_BUILD_FOLDER%-build\%CONFIGURATION%\pos2kml.exe
+
+  - setx INCLUDE "%INCLUDE%;%ProgramFiles(x86)%\Microsoft Visual Studio %VSVER%\VC\include"
+  - call "%ProgramFiles(x86)%\Microsoft Visual Studio %VSVER%\VC\vcvarsall.bat"
+  - devenv /Upgrade "%APPVEYOR_BUILD_FOLDER%\app\convbin\msc\msc.vcproj"
+  #- msbuild "%APPVEYOR_BUILD_FOLDER%\app\convbin\msc\msc.vcxproj" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  #- cd "%APPVEYOR_BUILD_FOLDER%\app\convbin\gcc"
+  #- '%make%'
   - cd %APPVEYOR_BUILD_FOLDER%-build
   - '%make%'
   - dir /b /s *.exe
@@ -50,7 +79,13 @@ after_build:
   - dir /b /s *.exe
   - mkdir deploy
   - copy %APPVEYOR_BUILD_FOLDER%-build\%CONFIGURATION%\RTKUSER.exe deploy\RTKUSER.exe
+  - copy %APPVEYOR_BUILD_FOLDER%-build\%CONFIGURATION%\configs.conf deploy\configs.conf
+  - copy %APPVEYOR_BUILD_FOLDER%-build\%CONFIGURATION%\convbin.exe deploy\convbin.exe
+  - copy %APPVEYOR_BUILD_FOLDER%-build\%CONFIGURATION%\rnx2rtkp.exe deploy\rnx2rtkp.exe
+  - copy %APPVEYOR_BUILD_FOLDER%-build\%CONFIGURATION%\pos2kml.exe deploy\pos2kml.exe
   - windeployqt --release deploy/RTKUSER.exe
+  #- windeployqt --release deploy/convbin.exe not a qt app
+  - for %%I in (%VCLIBS%) do copy %VCLIBDIR%\%%I deploy\
   - 7z a -tzip HORUS_RTKUSER_%commit%.zip deploy -r
   - copy %APPVEYOR_BUILD_FOLDER%-build\HORUS_RTKUSER_%commit%.zip %APPVEYOR_BUILD_FOLDER%\HORUS_RTKUSER_%commit%.zip
   - dir /b /s *.zip
