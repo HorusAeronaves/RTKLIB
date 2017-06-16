@@ -896,7 +896,7 @@ static void obs_queue_get_projection(obs_queue_t *obs_queue, obs_t *obs_destinat
 /* -------------------------------------------------------------------------- */
 
 /* rtk server thread ---------------------------------------------------------*/
-#ifdef WIN32
+#ifndef __linux__
 static DWORD WINAPI rtksvrthread(void *arg)
 #else
 static void *rtksvrthread(void *arg)
@@ -1338,7 +1338,7 @@ extern int rtksvrstart(rtksvr_t *svr, int cycle, int buffsize, int *strs,
         writesolhead(svr->stream+i,svr->solopt+i-3);
     }
     /* create rtk server thread */
-#ifdef WIN32
+#ifndef __linux__
     if (!(svr->thread=CreateThread(NULL,0,rtksvrthread,svr,0,NULL))) {
 #else
     if (pthread_create(&svr->thread,NULL,rtksvrthread,svr)) {
@@ -1377,7 +1377,7 @@ extern void rtksvrstop(rtksvr_t *svr, char **cmds)
     obs_queue_free(svr->base_queue);
     
     /* free rtk server thread */
-#ifdef WIN32
+#ifndef __linux__
     WaitForSingleObject(svr->thread,10000);
     CloseHandle(svr->thread);
 #else

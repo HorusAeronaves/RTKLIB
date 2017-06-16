@@ -61,7 +61,7 @@
 *-----------------------------------------------------------------------------*/
 #include <ctype.h>
 #include "rtklib.h"
-#ifndef WIN32
+#ifdef __linux__
 #include <fcntl.h>
 #include <sys/time.h>
 #define __USE_MISC
@@ -110,7 +110,7 @@ static const char rcsid[]="$Id$";
 
 /* macros --------------------------------------------------------------------*/
 
-#ifdef WIN32
+#ifndef __linux__
 #define dev_t               HANDLE
 #define socket_t            SOCKET
 typedef int socklen_t;
@@ -263,7 +263,7 @@ static unsigned int tick_master=0; /* time tick master for replay */
 static int fswapmargin=30;  /* file swap margin (s) */
 
 /* read/write serial buffer --------------------------------------------------*/
-#ifdef WIN32
+#ifndef __linux__
 static int readseribuff(serial_t *serial, unsigned char *buff, int nmax)
 {
     int ns;
@@ -299,10 +299,10 @@ static int writeseribuff(serial_t *serial, unsigned char *buff, int n)
     tracet(5,"writeseribuff: ns=%d rp=%d wp=%d\n",ns,serial->rp,serial->wp);
     return ns;
 }
-#endif /* WIN32 */
+#endif
 
 /* write serial thread -------------------------------------------------------*/
-#ifdef WIN32
+#ifndef __linux__
 static DWORD WINAPI serialthread(void *arg)
 {
     serial_t *serial=(serial_t *)arg;
@@ -324,7 +324,7 @@ static DWORD WINAPI serialthread(void *arg)
     free(serial->buff);
     return 0;
 }
-#endif /* WIN32 */
+#endif
 
 /* open serial ---------------------------------------------------------------*/
 static serial_t *openserial(const char *path, int mode, char *msg)
@@ -335,7 +335,7 @@ static serial_t *openserial(const char *path, int mode, char *msg)
     serial_t *serial;
     int i,brate=9600,bsize=8,stopb=1,tcp_port=0;
     char *p,parity='N',dev[128],port[128],fctr[64]="",path_tcp[32],msg_tcp[128];
-#ifdef WIN32
+#ifndef __linux__
     DWORD error,rw=0,siz=sizeof(COMMCONFIG);
     COMMCONFIG cc={0};
     COMMTIMEOUTS co={MAXDWORD,0,0,0,0}; /* non-block-read */
@@ -369,7 +369,7 @@ static serial_t *openserial(const char *path, int mode, char *msg)
     }
     parity=(char)toupper((int)parity);
     
-#ifdef WIN32
+#ifndef __linux__
     sprintf(dev,"\\\\.\\%s",port);
     if (mode&STR_MODE_R) rw|=GENERIC_READ;
     if (mode&STR_MODE_W) rw|=GENERIC_WRITE;
@@ -468,7 +468,7 @@ static void closeserial(serial_t *serial)
     tracet(3,"closeserial: dev=%d\n",serial->dev);
     
     if (!serial) return;
-#ifdef WIN32
+#ifndef __linux__
     serial->state=0;
     WaitForSingleObject(serial->thread,10000);
     CloseHandle(serial->dev);
@@ -493,15 +493,17 @@ static void closeserial_failed_fd(stream_t *stream)
 /* read serial ---------------------------------------------------------------*/
 static int readserial(serial_t *serial, unsigned char *buff, int n, char *msg)
 {
-    char msg_tcp[128];
-#ifdef WIN32
+
+char msg_tcp[128];
+
+#ifndef __linux__
     DWORD nr;
 #else
     int nr;
 #endif
     tracet(4,"readserial: dev=%d n=%d\n",serial->dev,n);
     if (!serial) return 0;
-#ifdef WIN32
+#ifndef __linux__
     if (!ReadFile(serial->dev,buff,n,&nr,NULL)) return 0;
 #else
     if ((nr=read(serial->dev,buff,n))<0) return 0;
@@ -522,7 +524,7 @@ static int writeserial(serial_t *serial, unsigned char *buff, int n, char *msg)
     tracet(3,"writeserial: dev=%d n=%d\n",serial->dev,n);
     
     if (!serial) return 0;
-#ifdef WIN32
+#ifndef __linux__
     if ((ns=writeseribuff(serial,buff,n))<n) serial->error=1;
 #else
     if ((ns=write(serial->dev,buff,n))<n) {
@@ -811,7 +813,7 @@ static int readfile(file_t *file, unsigned char *buff, int nmax, char *msg)
     if (!file) return 0;
     
     if (file->fp==stdin) {
-#ifndef WIN32
+#ifdef __linux__
         /* input from stdin */
         FD_ZERO(&rs); FD_SET(0,&rs);
         if (!select(1,&rs,NULL,NULL,&tv)) return 0;
@@ -1000,7 +1002,7 @@ static void decodetcppath(const char *path, char *addr, char *port, char *user,
     if (addr) strcpy(addr,p);
 }
 /* get socket error ----------------------------------------------------------*/
-#ifdef WIN32
+#ifndef __linux__
 static int errsock(void) {return WSAGetLastError();}
 #else
 static int errsock(void) {return errno;}
@@ -1010,7 +1012,7 @@ static int errsock(void) {return errno;}
 static int setsock(socket_t sock, char *msg)
 {
     int bs=buffsize,mode=1;
-#ifdef WIN32
+#ifndef __linux__
     int tv=0;
 #else
     struct timeval tv={0};
@@ -1050,7 +1052,7 @@ static socket_t accept_nb(socket_t sock, struct sockaddr *addr, socklen_t *len)
 /* non-block connect ---------------------------------------------------------*/
 static int connect_nb(socket_t sock, struct sockaddr *addr, socklen_t len)
 {
-#ifdef WIN32
+#ifndef __linux__
     u_long mode=1; 
     int err;
     
@@ -2397,7 +2399,7 @@ static gtime_t nextdltime(const int *topts, int stat)
     return time;
 }
 /* ftp thread ----------------------------------------------------------------*/
-#ifdef WIN32
+#ifndef __linux__
 static DWORD WINAPI ftpthread(void *arg)
 #else
 static void *ftpthread(void *arg)
@@ -2539,7 +2541,7 @@ static int readftp(ftp_t *ftp, unsigned char *buff, int n, char *msg)
         ftp->state=1;
         sprintf(msg,"%s://%s",ftp->proto?"http":"ftp",ftp->addr);
     
-#ifdef WIN32
+#ifndef __linux__
         if (!(ftp->thread=CreateThread(NULL,0,ftpthread,ftp,0,NULL))) {
 #else
         if (pthread_create(&ftp->thread,NULL,ftpthread,ftp)) {
@@ -2688,12 +2690,12 @@ static int statexmembuf(membuf_t *membuf, char *msg)
 *-----------------------------------------------------------------------------*/
 extern void strinitcom(void)
 {
-#ifdef WIN32
+#ifndef __linux__
     WSADATA data;
 #endif
     tracet(3,"strinitcom:\n");
 
-#ifdef WIN32
+#ifndef __linux__
     WSAStartup(MAKEWORD(2,0),&data);
 #endif
 }

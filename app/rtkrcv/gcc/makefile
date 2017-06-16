@@ -24,6 +24,14 @@ RELOPTS    = -O3 -DNDEBUG
 PRERELOPTS = -O3
 DBGOPTS    = -O0
 
+CFLAGS = -Wall -O3 -ansi -pedantic -I$(SRC) -I.. -DTRACE $(CTARGET) -g
+
+ifeq ($(OS), Linux)
+	LDLIBS = -lm -lrt -lpthread
+else
+	LDLIBS = -lm -lwinmm
+endif
+
 all:     release
 
 release: CFLAGS  = $(CFLAGS_CMN) $(RELOPTS)

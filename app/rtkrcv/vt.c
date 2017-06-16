@@ -7,14 +7,14 @@
 * history : 2015/01/11 1.0  separated from rtkrcv.c
 *           2016/09/19 1.1  change api vt_open()
 *-----------------------------------------------------------------------------*/
-#ifndef WIN32
+#ifdef __linux__
 #define _POSIX_C_SOURCE 2
 #endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <ctype.h>
-#ifdef WIN32
+#ifndef __linux__
 #include <winsock2.h>
 #else
 #include <unistd.h>

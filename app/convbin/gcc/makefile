@@ -6,10 +6,16 @@ BINDIR = /usr/local/bin
 
 SRC    = ../../../src
 
+#<<<<<<< HEAD
 INCLUDE = -I$(SRC)
 OPTIONS = -DTRACE -DENAGLO -DENAQZS -DENAGAL -DENACMP -DENAIRN -DNFREQ=7 -DNEXOBS=3
 CFLAGS_CMN  = -ansi -pedantic -Wall -Wno-unused-but-set-variable $(INCLUDE) $(OPTIONS) -g
-LDLIBS = -lm -lrt -lpthread
+
+ifeq ($(OS), Linux)
+	LDLIBS = -lm -lrt
+else
+	LDLIBS = -lm -lwinmm
+endif
 
 OBJS = convbin.o stream.o rtkcmn.o rinex.o sbas.o preceph.o rcvraw.o convrnx.o \
     rtcm.o rtcm2.o rtcm3.o rtcm3e.o pntpos.o ephemeris.o ionex.o \
@@ -45,6 +51,19 @@ build: mkdir $(OBJS)
 
 mkdir: 
 	mkdir -p $(OBJ_DIR)
+#=======
+#INCLUDE= -I$(SRC)
+#OPTIONS= -DTRACE -DENAGLO -DENAQZS -DENAGAL -DENACMP -DENAIRN -DNFREQ=7 -DNEXOBS=3
+
+#CFLAGS = -O3 -ansi -pedantic -Wall $(INCLUDE) $(OPTIONS) -g
+
+#all  : convbin
+
+#convbin    : convbin.o rtkcmn.o rinex.o sbas.o preceph.o rcvraw.o convrnx.o
+#convbin    : rtcm.o rtcm2.o rtcm3.o rtcm3e.o pntpos.o ephemeris.o ionex.o
+#convbin    : novatel.o ss2.o ublox.o crescent.o skytraq.o gw10.o javad.o nvs.o
+#convbin    : binex.o rt17.o qzslex.o septentrio.o cmr.o
+#>>>>>>> Update rtklib to compile in windows
 
 convbin.o  : ../convbin.c
 	$(CC) -o $(OBJ_DIR)/$@ -c $(CFLAGS) ../convbin.c

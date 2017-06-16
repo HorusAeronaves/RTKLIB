@@ -7,6 +7,16 @@ OPTIONS    = -DTRACE -DENAGLO -DENAQZS -DENAGAL -DENACMP -DENAIRN -DNFREQ=3 -DIE
 # for no lapack
 CFLAGS_CMN = -Wall -fno-strict-overflow -ansi -pedantic -Wno-unused-but-set-variable -I$(SRC) $(OPTIONS) -g
 LDLIBS  = ../../../lib/iers/gcc/iers.a -lgfortran -lm -lrt -lpthread
+CFLAGS  = -Wall -O3 -ansi -pedantic -I$(SRC) $(OPTS) -g
+
+ifeq ($(OS), Linux)
+	LDLIBS = -lm -lrt
+else
+	LDLIBS = -lm -lwinmm
+endif
+
+#CFLAGS  = -Wall -O3 -ansi -pedantic -Wno-unused-but-set-variable -I$(SRC) -DLAPACK $(OPTS)
+#LDLIBS  = -lm -lrt -llapack -lblas
 
 # for gprof
 #CFLAGS  = -Wall -O3 -ansi -pedantic -Wno-unused-but-set-variable -I$(SRC) -DLAPACK $(OPTS) -pg

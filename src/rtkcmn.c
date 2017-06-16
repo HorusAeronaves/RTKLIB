@@ -130,12 +130,15 @@
 #define _POSIX_C_SOURCE 199506
 #include <stdarg.h>
 #include <ctype.h>
-#ifndef WIN32
+#ifdef __linux__
 #include <dirent.h>
 #include <time.h>
 #include <sys/time.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#else
+#include <winsock2.h>
+#include <windows.h>
 #endif
 #include "rtklib.h"
 
@@ -1438,7 +1441,7 @@ extern gtime_t timeget(void)
 {
     gtime_t time;
     double ep[6]={0};
-#ifdef WIN32
+#ifndef __linux__
     SYSTEMTIME ts;
     
     GetSystemTime(&ts); /* utc */
@@ -1691,7 +1694,7 @@ extern int adjgpsweek(int week)
 *-----------------------------------------------------------------------------*/
 extern unsigned int tickget(void)
 {
-#ifdef WIN32
+#ifndef __linux__
     return (unsigned int)timeGetTime();
 #else
     struct timespec tp={0};
@@ -1710,7 +1713,7 @@ extern unsigned int tickget(void)
     gettimeofday(&tv,NULL);
     return tv.tv_sec*1000u+tv.tv_usec/1000u;
 #endif
-#endif /* WIN32 */
+#endif
 }
 /* sleep ms --------------------------------------------------------------------
 * sleep ms
@@ -1719,7 +1722,7 @@ extern unsigned int tickget(void)
 *-----------------------------------------------------------------------------*/
 extern void sleepms(int ms)
 {
-#ifdef WIN32
+#ifndef __linux__
     if (ms<5) Sleep(1); else Sleep(ms);
 #else
     struct timespec ts;
@@ -3117,7 +3120,7 @@ extern void traceb  (int level, const unsigned char *p, int n) {}
 *-----------------------------------------------------------------------------*/
 extern int execcmd(const char *cmd)
 {
-#ifdef WIN32
+#ifndef __linux__
     PROCESS_INFORMATION info;
     STARTUPINFO si={0};
     DWORD stat;
@@ -3152,7 +3155,7 @@ extern int expath(const char *path, char *paths[], int nmax)
 {
     int i,j,n=0;
     char tmp[1024];
-#ifdef WIN32
+#ifndef __linux__
     WIN32_FIND_DATA file;
     HANDLE h;
     char dir[1024]="",*p;
@@ -3228,7 +3231,7 @@ extern void createdir(const char *path)
     if (!(p=strrchr(buff,FILEPATHSEP))) return;
     *p='\0';
     
-#ifdef WIN32
+#ifndef __linux__
     CreateDirectory(buff,NULL);
 #else
     mkdir(buff,0777);
@@ -4006,7 +4009,7 @@ extern int rtk_uncompress(const char *file, char *uncfile)
         strcpy(uncfile,tmpfile); uncfile[p-tmpfile]='\0';
         strcpy(buff,tmpfile);
         fname=buff;
-#ifdef WIN32
+#ifndef __linux__
         if ((p=strrchr(buff,'\\'))) {
             *p='\0'; dir=fname; fname=p+1;
         }
