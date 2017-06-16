@@ -2,8 +2,13 @@
 
 BINDIR = /usr/local/bin
 SRC    = ../../../src
-CFLAGS_CMN = -Wall -ansi -pedantic -I$(SRC) -DTRACE
-LDLIBS  = -lm -lrt
+CFLAGS = -Wall -O3 -ansi -pedantic -I$(SRC) -DTRACE
+
+ifeq ($(OS), Linux)
+	LDLIBS = -lm -lrt
+else
+	LDLIBS = -lm -lwinmm
+endif
 
 OBJS = pos2kml.o convkml.o erb.o convgpx.o solution.o geoid.o rtkcmn.o preceph.o
     

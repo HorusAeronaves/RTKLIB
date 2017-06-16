@@ -3,7 +3,12 @@
 SRC    = ../../src
 #CFLAGS = -Wall -O3 -ansi -pedantic -I$(SRC) -DTRACE -DENAQZS -DENAGLO -DENALEX
 CFLAGS = -Wall -O3 -ansi -pedantic -I$(SRC) -DTRACE -DENAQZS -DENAGLO
-LDFLAGS= -lm -lrt
+
+ifeq ($(OS), Linux)
+	LDFLAGS = -lm -lrt
+else
+	LDFLAGS = -lm -lwinmm
+endif
 
 all        : convlex dumplex dumpssr outlexion
 

@@ -6,45 +6,24 @@ BINDIR = /usr/local/bin
 
 SRC    = ../../../src
 
-INCLUDE = -I$(SRC)
-OPTIONS = -DTRACE -DENAGLO -DENAQZS -DENAGAL -DENACMP -DENAIRN -DNFREQ=7 -DNEXOBS=3
-CFLAGS_CMN  = -ansi -pedantic -Wall -Wno-unused-but-set-variable $(INCLUDE) $(OPTIONS) -g
-LDLIBS = -lm -lrt -lpthread
+INCLUDE= -I$(SRC)
+OPTIONS= -DTRACE -DENAGLO -DENAQZS -DENAGAL -DENACMP -DENAIRN -DNFREQ=7 -DNEXOBS=3
 
-OBJS = convbin.o stream.o rtkcmn.o rinex.o sbas.o preceph.o rcvraw.o convrnx.o \
-    rtcm.o rtcm2.o rtcm3.o rtcm3e.o pntpos.o ephemeris.o ionex.o \
-    novatel.o ss2.o ublox.o crescent.o skytraq.o gw10.o javad.o nvs.o \
-    binex.o rt17.o tersus.o qzslex.o septentrio.o cmr.o
-    
-.DEFAULT_GOAL := release
-.PHONY: mkdir
+CFLAGS = -O3 -ansi -pedantic -Wall $(INCLUDE) $(OPTIONS) -g
 
-RELOPTS    = -O3 -DNDEBUG
-PRERELOPTS = -O3
-DBGOPTS    = -O0
+ifeq ($(OS), Linux)
+	LDLIBS = -lm -lrt
+else
+	LDLIBS = -lm -lwinmm
+endif
 
-all:     release
 
-release: CFLAGS  = $(CFLAGS_CMN) $(RELOPTS)
-release: EXEC    = convbin
-release: OBJ_DIR = ./release
-release: build
+all  : convbin
 
-prerelease: CFLAGS  = $(CFLAGS_CMN) $(PRERELOPTS)
-prerelease: EXEC    = convbin_prerel
-prerelease: OBJ_DIR = ./prerelease
-prerelease: build
-
-debug: CFLAGS  = $(CFLAGS_CMN) $(DBGOPTS)
-debug: EXEC    = convbin_dbg
-debug: OBJ_DIR = ./debug
-debug: build
-
-build: mkdir $(OBJS)
-	$(CC) -o $(EXEC) $(OBJS:%.o=$(OBJ_DIR)/%.o) $(LDLIBS)
-
-mkdir: 
-	mkdir -p $(OBJ_DIR)
+convbin    : convbin.o rtkcmn.o rinex.o sbas.o preceph.o rcvraw.o convrnx.o
+convbin    : rtcm.o rtcm2.o rtcm3.o rtcm3e.o pntpos.o ephemeris.o ionex.o
+convbin    : novatel.o ss2.o ublox.o crescent.o skytraq.o gw10.o javad.o nvs.o
+convbin    : binex.o rt17.o qzslex.o septentrio.o cmr.o
 
 convbin.o  : ../convbin.c
 	$(CC) -o $(OBJ_DIR)/$@ -c $(CFLAGS) ../convbin.c

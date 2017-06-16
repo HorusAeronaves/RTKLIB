@@ -10,37 +10,14 @@ LDLIBS  = -lm -lrt -lpthread
 # for beagleboard
 #CTARGET= -mfpu=neon -mfloat-abi=softfp -ffast-math
 
-OBJS = str2str.o stream.o rtkcmn.o erb.o solution.o sbas.o geoid.o \
-    rcvraw.o novatel.o ublox.o ss2.o crescent.o skytraq.o gw10.o javad.o \
-    nvs.o binex.o rt17.o tersus.o rtcm.o rtcm2.o rtcm3.o rtcm3e.o preceph.o \
-    streamsvr.o septentrio.o cmr.o
+OPTION = -DENAGLO -DENAGAL -DENAQZS -DENACMP -DENAIRN -DTRACE -DNFREQ=3 -DNEXOBS=3 -DSVR_REUSEADDR
+CFLAGS = -Wall -O3 -ansi -pedantic -I$(SRC) $(OPTION) $(CTARGET) -g
 
-.DEFAULT_GOAL := release
-.PHONY: mkdir
-
-RELOPTS    = -O3 -DNDEBUG
-PRERELOPTS = -O3
-DBGOPTS    = -O0
-
-all:     release
-
-release: CFLAGS  = $(CFLAGS_CMN) $(RELOPTS)
-release: EXEC    = str2str
-release: OBJ_DIR = ./release
-release: build
-
-prerelease: CFLAGS  = $(CFLAGS_CMN) $(PRERELOPTS)
-prerelease: EXEC    = str2str_prerel
-prerelease: OBJ_DIR = ./prerelease
-prerelease: build
-
-debug: CFLAGS  = $(CFLAGS_CMN) $(DBGOPTS)
-debug: EXEC    = str2str_dbg
-debug: OBJ_DIR = ./debug
-debug: build
-
-build: mkdir $(OBJS)
-	$(CC) -o $(EXEC) $(OBJS:%.o=$(OBJ_DIR)/%.o) $(LDLIBS)
+ifeq ($(OS), Linux)
+	LDLIBS = -lm -lrt -lpthread
+else
+	LDLIBS = -lm -lwinmm  -lpthread
+endif
 
 mkdir: 
 	mkdir -p $(OBJ_DIR)

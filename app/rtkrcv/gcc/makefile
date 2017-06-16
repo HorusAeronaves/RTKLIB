@@ -11,38 +11,13 @@ LDLIBS  = -lm -lrt -lpthread
 # for beagleboard
 #CTARGET= -mfpu=neon -mfloat-abi=softfp -ffast-math
 
-OBJS = rtkrcv.o vt.o rtkcmn.o rtksvr.o rtkpos.o geoid.o erb.o solution.o lambda.o \
-    sbas.o stream.o rcvraw.o rtcm.o preceph.o options.o pntpos.o ppp.o ppp_ar.o \
-    novatel.o ublox.o ss2.o crescent.o skytraq.o gw10.o javad.o nvs.o binex.o \
-    rt17.o tersus.o ephemeris.o rinex.o ionex.o rtcm2.o rtcm3.o rtcm3e.o qzslex.o \
-    ppp_corr.o tides.o septentrio.o cmr.o
+CFLAGS = -Wall -O3 -ansi -pedantic -I$(SRC) -I.. -DTRACE $(CTARGET) -g
 
-.DEFAULT_GOAL := release
-.PHONY: mkdir
-
-RELOPTS    = -O3 -DNDEBUG
-PRERELOPTS = -O3
-DBGOPTS    = -O0
-
-all:     release
-
-release: CFLAGS  = $(CFLAGS_CMN) $(RELOPTS)
-release: EXEC    = rtkrcv
-release: OBJ_DIR = ./release
-release: build
-
-prerelease: CFLAGS  = $(CFLAGS_CMN) $(PRERELOPTS)
-prerelease: EXEC    = rtkrcv_prerel
-prerelease: OBJ_DIR = ./prerelease
-prerelease: build
-
-debug: CFLAGS  = $(CFLAGS_CMN) $(DBGOPTS)
-debug: EXEC    = rtkrcv_dbg
-debug: OBJ_DIR = ./debug
-debug: build
-
-build: mkdir $(OBJS)
-	$(CC) -o $(EXEC) $(OBJS:%.o=$(OBJ_DIR)/%.o) $(LDLIBS)
+ifeq ($(OS), Linux)
+	LDLIBS = -lm -lrt -lpthread
+else
+	LDLIBS = -lm -lwinmm
+endif
 
 mkdir: 
 	mkdir -p $(OBJ_DIR)

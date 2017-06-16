@@ -41,7 +41,7 @@ typedef struct {                    /* download paths type */
 /* execute command with test timeout -----------------------------------------*/
 extern int execcmd_to(const char *cmd)
 {
-#ifdef WIN32
+#ifndef __linux__
     PROCESS_INFORMATION info;
     STARTUPINFO si={0};
     DWORD stat;
@@ -128,7 +128,7 @@ static void remot2local(const char *remot, const char *dir, char *local)
 /* test file existence -------------------------------------------------------*/
 static int exist_file(const char *local)
 {
-#ifdef WIN32
+#ifndef __linux__
     DWORD stat=GetFileAttributes(local);
     return stat!=0xFFFFFFFF;
 #else
@@ -274,7 +274,7 @@ static int mkdir_r(const char *dir)
 {
     char pdir[1024],*p;
     
-#ifdef WIN32
+#ifndef __linux__
     HANDLE h;
     WIN32_FIND_DATA data;
     
@@ -321,7 +321,7 @@ static int get_list(const path_t *path, const char *usr, const char *pwd,
     char cmd[4096],env[1024]="",remot[1024],*opt="",*opt2="",*p;
     int stat;
     
-#ifndef WIN32
+#ifdef __linux__
     opt2=" -o /dev/null";
 #endif
     remove(FTP_LISTING);
@@ -384,7 +384,7 @@ static int exec_down(const path_t *path, char *remot_p, const char *usr,
     char opt[1024]="",*opt2="",*p;
     int ret,proto;
     
-#ifndef WIN32
+#ifdef __linux__
     opt2=" 2> /dev/null";
 #endif
     strcpy(dir,path->local);
