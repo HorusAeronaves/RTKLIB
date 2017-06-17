@@ -15,6 +15,11 @@ public:
     Window(QWidget* parent = nullptr);
     ~Window();
 
+    int runCmd(QString cmd);
+    void runRTKLIB();
 private:
     Ui::_MainWindow *ui;
+
+    QString _savedPath;
+    QString _folderName;
 };
