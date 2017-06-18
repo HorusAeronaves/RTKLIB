@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>596</width>
-    <height>408</height>
+    <width>617</width>
+    <height>238</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../../../../horus/rtk2csv/icon/icon.ico</normaloff>../../../../horus/rtk2csv/icon/icon.ico</iconset>
+    <normaloff>../../../../../../../horus/rtk2csv/icon/icon.ico</normaloff>../../../../../../../horus/rtk2csv/icon/icon.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -77,6 +77,9 @@
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
          <widget class="QCheckBox" name="checkIBGE">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>IBGE</string>
           </property>
@@ -86,6 +89,9 @@
          <layout class="QGridLayout" name="gridLayout">
           <item row="1" column="0">
            <widget class="QLabel" name="label_4">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>Nav</string>
             </property>
@@ -113,6 +119,9 @@
           </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label_3">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>Obs</string>
             </property>
@@ -146,6 +155,9 @@
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
          <widget class="QCheckBox" name="checkBaseRtk">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>Base RTK</string>
           </property>
@@ -197,14 +209,24 @@
        </layout>
       </item>
       <item>
-       <widget class="QTextEdit" name="output"/>
-      </item>
-      <item>
-       <widget class="QPushButton" name="processButton">
+       <widget class="QPushButton" name="Process">
         <property name="text">
-         <string>Process</string>
+         <string>Converter</string>
         </property>
        </widget>
+      </item>
+      <item>
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </item>
