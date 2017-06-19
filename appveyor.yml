@@ -80,6 +80,7 @@ after_build:
   - mkdir deploy
   - copy %APPVEYOR_BUILD_FOLDER%-build\%CONFIGURATION%\RTKUSER.exe deploy\RTKUSER.exe
   - copy %APPVEYOR_BUILD_FOLDER%-build\%CONFIGURATION%\configs.conf deploy\configs.conf
+  - copy %APPVEYOR_BUILD_FOLDER%-build\%CONFIGURATION%\configs2.conf deploy\configs2.conf
   - copy %APPVEYOR_BUILD_FOLDER%-build\%CONFIGURATION%\convbin.exe deploy\convbin.exe
   - copy %APPVEYOR_BUILD_FOLDER%-build\%CONFIGURATION%\rnx2rtkp.exe deploy\rnx2rtkp.exe
   - copy %APPVEYOR_BUILD_FOLDER%-build\%CONFIGURATION%\pos2kml.exe deploy\pos2kml.exe
