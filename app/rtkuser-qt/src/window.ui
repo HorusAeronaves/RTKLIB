@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>617</width>
-    <height>238</height>
+    <height>467</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,10 +23,24 @@
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
        <layout class="QGridLayout" name="gridLayout_2">
-        <item row="0" column="0">
-         <widget class="QLabel" name="label">
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="baseRawInput">
+          <property name="placeholderText">
+           <string>Dados da Base</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QPushButton" name="baseRawButton">
           <property name="text">
-           <string>Hover:</string>
+           <string>Open File</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="hoverRawInput">
+          <property name="placeholderText">
+           <string>Dados do Rover</string>
           </property>
          </widget>
         </item>
@@ -43,13 +57,6 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="1">
-         <widget class="QLineEdit" name="hoverRawInput">
-          <property name="placeholderText">
-           <string>Dados do Hover</string>
-          </property>
-         </widget>
-        </item>
         <item row="1" column="0">
          <widget class="QLabel" name="label_2">
           <property name="text">
@@ -57,19 +64,43 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
-         <widget class="QLineEdit" name="baseRawInput">
-          <property name="placeholderText">
-           <string>Dados da Base</string>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Rover:</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="2">
-         <widget class="QPushButton" name="baseRawButton">
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="label_5">
           <property name="text">
-           <string>Open File</string>
+           <string>Antenna height (m):</string>
           </property>
          </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="AntAltInput">
+          <property name="text">
+           <string>2.104</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </item>
@@ -209,24 +240,14 @@
        </layout>
       </item>
       <item>
-       <widget class="QPushButton" name="Process">
-        <property name="text">
-         <string>Converter</string>
-        </property>
-       </widget>
+       <widget class="QTextEdit" name="output"/>
       </item>
       <item>
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
+       <widget class="QPushButton" name="processButton">
+        <property name="text">
+         <string>Process</string>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
+       </widget>
       </item>
      </layout>
     </item>

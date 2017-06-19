@@ -20,9 +20,7 @@ Window::Window(QWidget *parent) :
     ui->baseLatInput->setValidator(new QDoubleValidator(-90, 90, 12, this));
     ui->baseLonInput->setValidator(new QDoubleValidator(-180, 180, 12, this));
     ui->baseAltInput->setValidator(new QDoubleValidator(8900, -100, 6, this));
-    ui->baseLatInput->setText("-27.570614");
-    ui->baseLonInput->setText("-48.5085033");
-    ui->baseAltInput->setText("71.123");
+    ui->AntAltInput->setValidator(new QDoubleValidator(0, 200, 6, this));
 
     // Make connections and set initial state
     // IBGE and Base RTK
@@ -31,21 +29,27 @@ Window::Window(QWidget *parent) :
         ui->baseLonInput->setEnabled(state == Qt::Checked);
         ui->baseAltInput->setEnabled(state == Qt::Checked);
         ui->basePositionButton->setEnabled(state == Qt::Checked);
-        //ui->checkIBGE->setCheckState(state == Qt::Checked ? Qt::Unchecked : Qt::Checked);
+        if(ui->checkIBGE->isChecked()) {
+            ui->checkIBGE->setCheckState(state == Qt::Checked ? Qt::Unchecked : Qt::Checked);
+        }
     });
     connect(ui->checkIBGE, &QCheckBox::stateChanged, [=](int state) {
         ui->IBGEObsInput->setEnabled(state == Qt::Checked);
         ui->IBGENavInput->setEnabled(state == Qt::Checked);
         ui->IBGENavButton->setEnabled(state == Qt::Checked);
         ui->IBGEObsButton->setEnabled(state == Qt::Checked);
-        //ui->checkBaseRtk->setCheckState(state == Qt::Checked ? Qt::Unchecked : Qt::Checked);
+        ui->label_3->setEnabled(state == Qt::Checked);
+        ui->label_4->setEnabled(state == Qt::Checked);
+        if(ui->checkBaseRtk->isChecked()) {
+            ui->checkBaseRtk->setCheckState(state == Qt::Checked ? Qt::Unchecked : Qt::Checked);
+        }
     });
     //TODO
     // We don't have it done yet
     ui->checkBaseRtk->setCheckState(Qt::Unchecked);
     ui->checkIBGE->setCheckState(Qt::Unchecked);
-    ui->checkBaseRtk->setEnabled(false);
-    ui->checkIBGE->setEnabled(false);
+    ui->checkBaseRtk->setEnabled(true);
+    ui->checkIBGE->setEnabled(true);
 
     // Connect buttons
     // Hover button
@@ -138,30 +142,12 @@ int Window::runCmd(QString cmd)
     qDebug() << "Running";
     QProcess *process = new QProcess();
     ui->output->append(QStringLiteral("Running %1").arg(cmd));
-
-    QThread* thread = new QThread;
-    process->moveToThread(thread);
-    process->setReadChannel(QProcess::StandardOutput);
-    process->setReadChannel(QProcess::StandardError);
+    ui->output->append("");
     process->start(cmd);
-
-    connect(process, &QProcess::readyReadStandardOutput, [=](){
-        QString cmdOutput = process->readAllStandardOutput();
-        cmdOutput.chop(1);
-        ui->output->insertPlainText(cmdOutput + '\n');
-        ui->output->moveCursor(QTextCursor::End);
+    while(!process->waitForFinished(100)) {
         QCoreApplication::processEvents();
-    });
-    connect(process, &QProcess::readyReadStandardError, this, [=](){
-        QString cmdOutput = process->readAllStandardError();
-        cmdOutput.chop(1);
-        ui->output->insertPlainText(cmdOutput + '\n');
-        ui->output->moveCursor(QTextCursor::End);
-        QCoreApplication::processEvents();
-    });
-
-    process->waitForFinished();
-    ui->output->append(process->readAllStandardError());
+        process->readAllStandardError();
+    }
     ui->output->moveCursor(QTextCursor::End);
     QCoreApplication::processEvents();
     return process->exitCode();
@@ -176,25 +162,55 @@ void Window::runRTKLIB()
     _folderName = QDir::toNativeSeparators(QDateTime::currentDateTime().toString(QStringLiteral("ddMMyyyy-hhmmsszzz")));
     _savedPath = path + QStringLiteral("/CUI-") + _folderName + "/";
     path = QDir::toNativeSeparators(path + "/");
-    QString cmd = QStringLiteral("\"%1convbin\" -f 1 -r ubx -v 3.03 \"%2\" -d \"%3\"").arg(path).arg(ui->hoverRawInput->text()).arg(_savedPath);
+    QString cmd = QStringLiteral("\"%1convbin\" -f 1 -r ubx -v 3.03 \"%2\" -d \"%3\" -o \"rover.obs\" -n \"rover.nav\"").arg(path).arg(ui->hoverRawInput->text()).arg(_savedPath);
     if(runCmd(cmd) != 0) {
         ui->output->append("Error !");
         ui->statusbar->showMessage("ERRO !");
         return;
     }
-    cmd = QStringLiteral("\"%1convbin\" -f 1 -r ubx -v 3.03 \"%2\" -d \"%3\"").arg(path).arg(ui->baseRawInput->text()).arg(_savedPath);
+    cmd = QStringLiteral("\"%1convbin\" -hd %4/0/0 -f 1 -r ubx -v 3.03 \"%2\" -d \"%3\" -o \"base.obs\" -n \"base.nav\"").arg(path).arg(ui->baseRawInput->text()).arg(_savedPath).arg(ui->AntAltInput->text());
     if(runCmd(cmd) != 0) {
         ui->output->append("Error !");
         ui->statusbar->showMessage("ERRO !");
         return;
     }
     _savedPath = QDir::toNativeSeparators(_savedPath);
-    cmd = QStringLiteral("\"%1rnx2rtkp\" -k \"%1configs.conf\" \"%2rover.obs\" \"%2base.obs\" \"%2base.nav\" \"%2base.gnav\" -o \"%2out.pos\"").arg(path).arg(_savedPath);
+
+    if(ui->checkIBGE->isChecked()) {
+        cmd = QStringLiteral("\"%1rnx2rtkp\" -k \"%1configs2.conf\" \"%2base.obs\" \"%3\" \"%4\" -o \"%2ibge.pos\"").arg(path).arg(_savedPath).arg(ui->IBGEObsInput->text(), ui->IBGENavInput->text());
+
+        if(runCmd(cmd) != 0) {
+            ui->output->append("Error !");
+            ui->statusbar->showMessage("ERRO !");
+            return;
+        } else {
+            QFile* file = new QFile(_savedPath + "ibge.pos");
+            file->open(QIODevice::ReadOnly | QIODevice::Text);
+            QString line;
+            unsigned int lineCount = 0;
+            while(!file->atEnd() && lineCount < 24){
+                line = file->readLine();
+                lineCount++;
+            }
+            QStringList lineSplited = line.split("  ");
+            ui->baseLatInput->setText(lineSplited[1]);
+            ui->baseLonInput->setText(lineSplited[2]);
+            ui->baseAltInput->setText(lineSplited[3]);
+        }
+    }
+
+    if(ui->checkBaseRtk->isChecked() || ui->checkIBGE->isChecked()) {
+        cmd = QStringLiteral("\"%1rnx2rtkp\" -k \"%1configs.conf\" -l %3 %4 %5 \"%2rover.obs\" \"%2base.obs\" \"%2base.nav\" \"%2base.gnav\" -o \"%2out.pos\"").arg(path).arg(_savedPath).arg(ui->baseLatInput->text(), ui->baseLonInput->text(), ui->baseAltInput->text());
+    } else {
+        cmd = QStringLiteral("\"%1rnx2rtkp\" -k \"%1configs.conf\" \"%2rover.obs\" \"%2base.obs\" \"%2base.nav\" \"%2base.gnav\" -o \"%2out.pos\"").arg(path).arg(_savedPath);
+    }
+
     if(runCmd(cmd) != 0) {
         ui->output->append("Error !");
         ui->statusbar->showMessage("ERRO !");
         return;
     }
+
     cmd = QStringLiteral("\"%1pos2kml\" -o \"%2out_events.gpx\" -a -gpx \"%2out_events.pos\"").arg(path).arg(_savedPath);
     if(runCmd(cmd) != 0) {
         ui->output->append("Error !");
