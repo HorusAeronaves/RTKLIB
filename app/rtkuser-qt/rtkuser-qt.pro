@@ -27,6 +27,9 @@ DebugBuild {
     DESTDIR  = $${OUT_PWD}/release
 }
 
+GIT_VERSION = $$system(git --git-dir $$_PRO_FILE_PWD_/../../.git --work-tree $$PWD describe --always --tags)
+DEFINES += 'GIT_VERSION=\\"$$GIT_VERSION\\"'
+
 copydata.commands = $$QMAKE_COPY "$$shell_path($$PWD/configs.conf)" "$$shell_path($$DESTDIR)"
 copydata2.commands = $$QMAKE_COPY "$$shell_path($$PWD/configs2.conf)" "$$shell_path($$DESTDIR)"
 first.depends = $(first) copydata copydata2
