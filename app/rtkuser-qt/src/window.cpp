@@ -123,20 +123,28 @@ Window::Window(QWidget *parent) :
 
     // Process button
     connect(ui->processButton, &QPushButton::clicked, [=](){
-        runRTKLIB();
         if(ui->hoverRawInput->text().isEmpty() && ui->baseRawInput->text().isEmpty()) {
-            qDebug() << "Add Rover and Base files !";
+            QMessageBox::critical(this, tr("Error"), tr("Add Rover and Base files !"));
+            return;
         }
 
         if(ui->checkIBGE->checkState() == Qt::Checked) {
-            if(ui->IBGEObsInput->text().isEmpty() && ui->IBGENavInput->text().isEmpty()) {
-                qDebug() << "Add IBGE files !";
+            if(ui->IBGEObsInput->text().isEmpty() || ui->IBGENavInput->text().isEmpty()) {
+                QMessageBox::critical(this, tr("Error"), tr("Add IBGE files !"));
                 return;
             }
         } else {
-            //TODO
-            qDebug() << "TODO";
+            if(ui->checkBaseRtk->checkState() == Qt::Checked) {
+                if (ui->baseLatInput->text().isEmpty() \
+                    || ui->baseLonInput->text().isEmpty() \
+                    || ui->baseLonInput->text().isEmpty()) {
+                    QMessageBox::critical(this, tr("Error"), tr("Add base position !"));
+                    return;
+                }
+            }
         }
+
+        runRTKLIB();
     });
 }
 
