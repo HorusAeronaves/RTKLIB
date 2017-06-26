@@ -16,6 +16,9 @@ Window::Window(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // Add software version
+    this->setWindowTitle(this->windowTitle() + " - " + GIT_VERSION);
+
     // Set mask and default values for base input
     ui->baseLatInput->setValidator(new QDoubleValidator(-90, 90, 12, this));
     ui->baseLonInput->setValidator(new QDoubleValidator(-180, 180, 12, this));
