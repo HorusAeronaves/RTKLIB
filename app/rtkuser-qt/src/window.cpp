@@ -1,6 +1,10 @@
 #include "window.h"
 #include "ui_window.h"
 
+#include "convbin.h"
+#include "postokml.h"
+#include "rnxtortkp.h"
+
 #include <QApplication>
 #include <QDateTime>
 #include <QDebug>
@@ -172,23 +176,52 @@ void Window::runRTKLIB()
     QString path = qApp->applicationDirPath();
     _folderName = QDir::toNativeSeparators(QDateTime::currentDateTime().toString(QStringLiteral("ddMMyyyy-hhmmsszzz")));
     _savedPath = path + QStringLiteral("/CUI-") + _folderName + "/";
-    path = QDir::toNativeSeparators(path + "/");
-    QString cmd = QStringLiteral("\"%1convbin\" -f 1 -r ubx -v 3.03 \"%2\" -d \"%3\" -o \"rover.obs\" -n \"rover.nav\"").arg(path).arg(ui->hoverRawInput->text()).arg(_savedPath);
-    if(runCmd(cmd) != 0) {
-        ui->output->append("Error !");
-        ui->statusbar->showMessage("ERRO !");
-        return;
-    }
-    cmd = QStringLiteral("\"%1convbin\" -hd %4/0/0 -f 1 -r ubx -v 3.03 \"%2\" -d \"%3\" -o \"base.obs\" -n \"base.nav\"").arg(path).arg(ui->baseRawInput->text()).arg(_savedPath).arg(ui->AntAltInput->text());
-    if(runCmd(cmd) != 0) {
-        ui->output->append("Error !");
-        ui->statusbar->showMessage("ERRO !");
-        return;
-    }
     _savedPath = QDir::toNativeSeparators(_savedPath);
+    path = QDir::toNativeSeparators(path + "/");
+    QString cmd;
+
+    // Rover convbin
+    Convbin convbin;
+    convbin.setBinPath(path);
+    convbin.setLogFile(ui->hoverRawInput->text());
+    convbin.setLogFormatType("ubx");
+    convbin.setOutputFile("rover");
+    convbin.setOutputPath(_savedPath);
+    convbin.setRinexVersion("3.03");
+    cmd = convbin.command();
+
+    if(runCmd(cmd) != 0) {
+        ui->output->append("Error !");
+        ui->statusbar->showMessage("ERRO !");
+        return;
+    }
+
+    // Base convbin
+    convbin.setBinPath(path);
+    convbin.setLogFile(ui->baseRawInput->text());
+    convbin.setLogFormatType("ubx");
+    convbin.setOutputFile("base");
+    convbin.setDelta(0.0, 0.0, QString(ui->AntAltInput->text()).toFloat());
+    convbin.setOutputPath(_savedPath);
+    convbin.setRinexVersion("3.03");
+    cmd = convbin.command();
+
+    if(runCmd(cmd) != 0) {
+        ui->output->append("Error !");
+        ui->statusbar->showMessage("ERRO !");
+        return;
+    }
 
     if(ui->checkIBGE->isChecked()) {
-        cmd = QStringLiteral("\"%1rnx2rtkp\" -k \"%1configs2.conf\" \"%2base.obs\" \"%3\" \"%4\" -o \"%2ibge.pos\"").arg(path).arg(_savedPath).arg(ui->IBGEObsInput->text(), ui->IBGENavInput->text());
+        RnxToRtkp rnx2rtkp;
+        rnx2rtkp.setBinPath(path);
+        rnx2rtkp.setConfigurationFile(path + "configs2.conf");
+        rnx2rtkp.setInputFile(_savedPath + "base.obs");
+        rnx2rtkp.setNavFile(ui->IBGENavInput->text());
+        rnx2rtkp.setObsFile(ui->IBGEObsInput->text());
+        rnx2rtkp.setOutputFile("ibge");
+        rnx2rtkp.setOutputPath(_savedPath);
+        cmd = rnx2rtkp.command();
 
         if(runCmd(cmd) != 0) {
             ui->output->append("Error !");
@@ -210,11 +243,18 @@ void Window::runRTKLIB()
         }
     }
 
+    RnxToRtkp rnx2rtkp;
+    rnx2rtkp.setBinPath(path);
+    rnx2rtkp.setConfigurationFile(path + "configs.conf");
+    rnx2rtkp.setInputFile(_savedPath + "rover.obs");
+    rnx2rtkp.setNavFile(_savedPath + "base.nav");
+    rnx2rtkp.setObsFile(_savedPath + "base.obs");
+    rnx2rtkp.setOutputFile("out");
+    rnx2rtkp.setOutputPath(_savedPath);
     if(ui->checkBaseRtk->isChecked() || ui->checkIBGE->isChecked()) {
-        cmd = QStringLiteral("\"%1rnx2rtkp\" -k \"%1configs.conf\" -l %3 %4 %5 \"%2rover.obs\" \"%2base.obs\" \"%2base.nav\" \"%2base.gnav\" -o \"%2out.pos\"").arg(path).arg(_savedPath).arg(ui->baseLatInput->text(), ui->baseLonInput->text(), ui->baseAltInput->text());
-    } else {
-        cmd = QStringLiteral("\"%1rnx2rtkp\" -k \"%1configs.conf\" \"%2rover.obs\" \"%2base.obs\" \"%2base.nav\" \"%2base.gnav\" -o \"%2out.pos\"").arg(path).arg(_savedPath);
+        rnx2rtkp.setBasePosition(ui->baseLatInput->text(), ui->baseLonInput->text(), ui->baseAltInput->text());
     }
+    cmd = rnx2rtkp.command();
 
     if(runCmd(cmd) != 0) {
         ui->output->append("Error !");
@@ -222,7 +262,12 @@ void Window::runRTKLIB()
         return;
     }
 
-    cmd = QStringLiteral("\"%1pos2kml\" -o \"%2out_events.gpx\" -a -gpx \"%2out_events.pos\"").arg(path).arg(_savedPath);
+    PosToKml pos2kml;
+    pos2kml.setBinPath(path);
+    pos2kml.setOutputFile("out");
+    pos2kml.setOutputPath(_savedPath);
+    cmd = pos2kml.command();
+
     if(runCmd(cmd) != 0) {
         ui->output->append("Error !");
         ui->statusbar->showMessage("ERRO !");
