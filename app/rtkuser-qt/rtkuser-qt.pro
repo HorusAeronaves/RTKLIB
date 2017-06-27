@@ -13,10 +13,16 @@ QT += \
 
 SOURCES += \
     src/main.cpp \
-    src/window.cpp
+    src/window.cpp \
+    src/convbin.cpp \
+    src/rnxtortkp.cpp \
+    src/postokml.cpp
 
 HEADERS += \
-    src/window.h
+    src/window.h \
+    src/convbin.h \
+    src/rnxtortkp.h \
+    src/postokml.h
 
 FORMS += \
     src/window.ui
