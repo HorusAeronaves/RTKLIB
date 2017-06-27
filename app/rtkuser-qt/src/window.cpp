@@ -84,9 +84,9 @@ Window::Window(QWidget *parent) :
     // IBGE Obs
     connect(ui->IBGEObsButton, &QPushButton::clicked, [=](){
         QString fileName = \
-            QFileDialog::getOpenFileName(this, tr("Select a .17o file"), \
+            QFileDialog::getOpenFileName(this, tr("Select a .17o/.o file"), \
                 QDir::homePath(), \
-                QStringLiteral("*.17o"));
+                QStringLiteral("*.17o, *.o"));
         if (fileName.isNull()) {
             QMessageBox::critical(this, tr("Error"), tr("No file selected !"));
         } else {
@@ -97,9 +97,9 @@ Window::Window(QWidget *parent) :
     // IBGE Nav
     connect(ui->IBGENavButton, &QPushButton::clicked, [=](){
         QString fileName = \
-            QFileDialog::getOpenFileName(this, tr("Select a .17n file"), \
+            QFileDialog::getOpenFileName(this, tr("Select a .17n/.n file"), \
                 QDir::homePath(), \
-                QStringLiteral("*.17n"));
+                QStringLiteral("*.17n, *.n"));
         if (fileName.isNull()) {
             QMessageBox::critical(this, tr("Error"), tr("No file selected !"));
         } else {
