@@ -83,24 +83,37 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="AntAltInput">
-          <property name="text">
-           <string>2.104</string>
+         <widget class="QDoubleSpinBox" name="AntAltInput">
+          <property name="decimals">
+           <number>3</number>
+          </property>
+          <property name="maximum">
+           <double>9999.998999999999796</double>
+          </property>
+          <property name="singleStep">
+           <double>0.100000000000000</double>
+          </property>
+          <property name="value">
+           <double>2.104000000000000</double>
           </property>
          </widget>
         </item>
         <item>
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>Elevation mask (º):</string>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="ElevationMaskInput">
+          <property name="maximum">
+           <number>90</number>
           </property>
-         </spacer>
+          <property name="value">
+           <number>15</number>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
