@@ -29,11 +29,17 @@ Window::Window(QWidget *parent) :
     ui->baseAltInput->setValidator(new QDoubleValidator(8900, -100, 6, this));
 
     // Make connections and set initial state
+    // PPK
+    connect(ui->checkConfig, &QCheckBox::stateChanged, [=](int state) {
+        ui->configInput->setEnabled(state == Qt::Checked);
+        ui->configButton->setEnabled(state == Qt::Checked);
+    });
     // IBGE and Base RTK
     connect(ui->checkBaseRtk, &QCheckBox::stateChanged, [=](int state) {
         ui->baseLatInput->setEnabled(state == Qt::Checked);
         ui->baseLonInput->setEnabled(state == Qt::Checked);
         ui->baseAltInput->setEnabled(state == Qt::Checked);
+        ui->basePositionButton->setEnabled(state == Qt::Checked);
         ui->basePositionButton->setEnabled(state == Qt::Checked);
         if(ui->checkIBGE->isChecked()) {
             ui->checkIBGE->setCheckState(state == Qt::Checked ? Qt::Unchecked : Qt::Checked);
@@ -46,9 +52,17 @@ Window::Window(QWidget *parent) :
         ui->IBGEObsButton->setEnabled(state == Qt::Checked);
         ui->label_3->setEnabled(state == Qt::Checked);
         ui->label_4->setEnabled(state == Qt::Checked);
+        ui->checkIBGEConfig->setEnabled(state == Qt::Checked);
+        if(ui->checkIBGEConfig->isChecked()) {
+            ui->checkIBGEConfig->setCheckState(Qt::Unchecked);
+        }
         if(ui->checkBaseRtk->isChecked()) {
             ui->checkBaseRtk->setCheckState(state == Qt::Checked ? Qt::Unchecked : Qt::Checked);
         }
+    });
+    connect(ui->checkIBGEConfig, &QCheckBox::stateChanged, [=](int state) {
+        ui->configIBGEInput->setEnabled(state == Qt::Checked);
+        ui->IBGEConfigButton->setEnabled(state == Qt::Checked);
     });
     //TODO
     // We don't have it done yet
@@ -84,6 +98,19 @@ Window::Window(QWidget *parent) :
         }
     });
 
+    // PPK
+    connect(ui->configButton, &QPushButton::clicked, [=](){
+        QString fileName = \
+            QFileDialog::getOpenFileName(this, tr("Select a .conf file"), \
+                QDir::homePath(), \
+                QStringLiteral("*.conf"));
+        if (fileName.isNull()) {
+            QMessageBox::critical(this, tr("Error"), tr("No file selected !"));
+        } else {
+            ui->configInput->setText(QDir::toNativeSeparators(fileName));
+        }
+    });
+
     // IBGE Obs
     connect(ui->IBGEObsButton, &QPushButton::clicked, [=](){
         QString fileName = \
@@ -107,6 +134,19 @@ Window::Window(QWidget *parent) :
             QMessageBox::critical(this, tr("Error"), tr("No file selected !"));
         } else {
             ui->IBGENavInput->setText(QDir::toNativeSeparators(fileName));
+        }
+    });
+
+    // IBGE PPP
+    connect(ui->IBGEConfigButton, &QPushButton::clicked, [=](){
+        QString fileName = \
+            QFileDialog::getOpenFileName(this, tr("Select a .conf file"), \
+                QDir::homePath(), \
+                QStringLiteral("*.conf"));
+        if (fileName.isNull()) {
+            QMessageBox::critical(this, tr("Error"), tr("No file selected !"));
+        } else {
+            ui->configIBGEInput->setText(QDir::toNativeSeparators(fileName));
         }
     });
 
@@ -214,7 +254,9 @@ void Window::runRTKLIB()
     if(ui->checkIBGE->isChecked()) {
         RnxToRtkp rnx2rtkp;
         rnx2rtkp.setBinPath(path);
-        rnx2rtkp.setConfigurationFile(path + "configs2.conf");
+        QString configFile = ui->checkIBGEConfig->isChecked() ? \
+            ui->configIBGEInput->text() : path + "configs2.conf";
+        rnx2rtkp.setConfigurationFile(configFile);
         rnx2rtkp.setInputFile(_savedPath + "base.obs");
         rnx2rtkp.setNavFile(ui->IBGENavInput->text());
         rnx2rtkp.setObsFile(ui->IBGEObsInput->text());
@@ -244,7 +286,9 @@ void Window::runRTKLIB()
 
     RnxToRtkp rnx2rtkp;
     rnx2rtkp.setBinPath(path);
-    rnx2rtkp.setConfigurationFile(path + "configs.conf");
+    QString configFile = ui->checkConfig->isChecked() ? \
+            ui->configInput->text() : path + "configs.conf";
+    rnx2rtkp.setConfigurationFile(configFile);
     rnx2rtkp.setElevationMask(ui->ElevationMaskInput->value());
     rnx2rtkp.setInputFile(_savedPath + "rover.obs");
     rnx2rtkp.setNavFile(_savedPath + "base.nav");
