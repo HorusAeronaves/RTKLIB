@@ -23,10 +23,24 @@
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
        <layout class="QGridLayout" name="gridLayout_2">
-        <item row="1" column="1">
-         <widget class="QLineEdit" name="baseRawInput">
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="hoverRawInput">
           <property name="placeholderText">
-           <string>Dados da Base</string>
+           <string>Dados do Rover</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Base:   </string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Rover:</string>
           </property>
          </widget>
         </item>
@@ -34,13 +48,6 @@
          <widget class="QPushButton" name="baseRawButton">
           <property name="text">
            <string>Open File</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QLineEdit" name="hoverRawInput">
-          <property name="placeholderText">
-           <string>Dados do Rover</string>
           </property>
          </widget>
         </item>
@@ -57,17 +64,40 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>Base:   </string>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="baseRawInput">
+          <property name="placeholderText">
+           <string>Dados da Base</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="label">
+        <item row="2" column="0">
+         <widget class="QCheckBox" name="checkConfig">
           <property name="text">
-           <string>Rover:</string>
+           <string>Config.:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="configInput">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="placeholderText">
+           <string>Arquivo de configuração PPK</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QPushButton" name="configButton">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Open File</string>
           </property>
          </widget>
         </item>
@@ -131,13 +161,13 @@
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_4">
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="IBGENavInput">
             <property name="enabled">
              <bool>false</bool>
             </property>
-            <property name="text">
-             <string>Nav</string>
+            <property name="placeholderText">
+             <string>Navegação</string>
             </property>
            </widget>
           </item>
@@ -151,16 +181,6 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="IBGENavInput">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="placeholderText">
-             <string>Navegação</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label_3">
             <property name="enabled">
@@ -168,6 +188,16 @@
             </property>
             <property name="text">
              <string>Obs</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QPushButton" name="IBGENavButton">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Open File</string>
             </property>
            </widget>
           </item>
@@ -181,8 +211,38 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
-           <widget class="QPushButton" name="IBGENavButton">
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Nav</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QCheckBox" name="checkIBGEConfig">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Config.:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="configIBGEInput">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="placeholderText">
+             <string>Arquivo de configuração PPP</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QPushButton" name="IBGEConfigButton">
             <property name="enabled">
              <bool>false</bool>
             </property>
