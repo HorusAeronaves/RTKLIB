@@ -27,7 +27,6 @@ Window::Window(QWidget *parent) :
     ui->baseLatInput->setValidator(new QDoubleValidator(-90, 90, 12, this));
     ui->baseLonInput->setValidator(new QDoubleValidator(-180, 180, 12, this));
     ui->baseAltInput->setValidator(new QDoubleValidator(8900, -100, 6, this));
-    ui->AntAltInput->setValidator(new QDoubleValidator(0, 200, 6, this));
 
     // Make connections and set initial state
     // IBGE and Base RTK
@@ -246,6 +245,7 @@ void Window::runRTKLIB()
     RnxToRtkp rnx2rtkp;
     rnx2rtkp.setBinPath(path);
     rnx2rtkp.setConfigurationFile(path + "configs.conf");
+    rnx2rtkp.setElevationMask(ui->ElevationMaskInput->value());
     rnx2rtkp.setInputFile(_savedPath + "rover.obs");
     rnx2rtkp.setNavFile(_savedPath + "base.nav");
     rnx2rtkp.setObsFile(_savedPath + "base.obs");
