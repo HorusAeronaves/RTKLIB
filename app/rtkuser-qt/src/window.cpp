@@ -116,7 +116,7 @@ Window::Window(QWidget *parent) :
         QString fileName = \
             QFileDialog::getOpenFileName(this, tr("Select a .17o/.o file"), \
                 QDir::homePath(), \
-                QStringLiteral("*.17o, *.o"));
+                QStringLiteral("*.17o *.o"));
         if (fileName.isNull()) {
             QMessageBox::critical(this, tr("Error"), tr("No file selected !"));
         } else {
@@ -129,7 +129,7 @@ Window::Window(QWidget *parent) :
         QString fileName = \
             QFileDialog::getOpenFileName(this, tr("Select a .17n/.n file"), \
                 QDir::homePath(), \
-                QStringLiteral("*.17n, *.n"));
+                QStringLiteral("*.17n *.n"));
         if (fileName.isNull()) {
             QMessageBox::critical(this, tr("Error"), tr("No file selected !"));
         } else {
