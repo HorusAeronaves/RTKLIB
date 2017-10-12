@@ -214,7 +214,7 @@ void Window::runRTKLIB()
     // Use QDir::toNativeSeparators in all paths
     ui->statusbar->showMessage("Running ...");
     QString path = qApp->applicationDirPath();
-    _folderName = QDir::toNativeSeparators(QDateTime::currentDateTime().toString(QStringLiteral("ddMMyyyy-hhmmsszzz")));
+    _folderName = QDir::toNativeSeparators(QDateTime::currentDateTime().toString(QStringLiteral("yyyyMMdd-hhmmsszzz")));
     _savedPath = path + QStringLiteral("/CUI-") + _folderName + "/";
     _savedPath = QDir::toNativeSeparators(_savedPath);
     path = QDir::toNativeSeparators(path + "/");
