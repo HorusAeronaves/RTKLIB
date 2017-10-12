@@ -12,6 +12,7 @@
 #include <QMessageBox>
 #include <QProcess>
 #include <QStandardPaths>
+#include <QString>
 #include <QThread>
 
 Window::Window(QWidget *parent) :
@@ -210,6 +211,9 @@ int Window::runCmd(QString cmd)
 
 void Window::runRTKLIB()
 {
+    QString runningString = QStringLiteral("Running ... \t|\t%1 / %2");
+    uint step = 1;
+    uint nSteps = 4 + ui->checkIBGE->isChecked()*2;
     //TODO
     // Use QDir::toNativeSeparators in all paths
     ui->statusbar->showMessage("Running ...");
@@ -230,6 +234,7 @@ void Window::runRTKLIB()
     convbin.setRinexVersion("3.03");
     cmd = convbin.command();
 
+    ui->statusbar->showMessage(runningString.arg(step++).arg(nSteps));
     if(runCmd(cmd) != 0) {
         ui->output->append("Error !");
         ui->statusbar->showMessage("ERRO !");
@@ -246,6 +251,7 @@ void Window::runRTKLIB()
     convbin.setRinexVersion("3.03");
     cmd = convbin.command();
 
+    ui->statusbar->showMessage(runningString.arg(step++).arg(nSteps));
     if(runCmd(cmd) != 0) {
         ui->output->append("Error !");
         ui->statusbar->showMessage("ERRO !");
@@ -265,24 +271,26 @@ void Window::runRTKLIB()
         rnx2rtkp.setOutputPath(_savedPath);
         cmd = rnx2rtkp.command();
 
+        ui->statusbar->showMessage(runningString.arg(step++).arg(nSteps));
         if(runCmd(cmd) != 0) {
             ui->output->append("Error !");
             ui->statusbar->showMessage("ERRO !");
             return;
-        } else {
-            QFile* file = new QFile(_savedPath + "ibge.pos");
-            file->open(QIODevice::ReadOnly | QIODevice::Text);
-            QString line;
-            unsigned int lineCount = 0;
-            while(!file->atEnd() && lineCount < 24){
-                line = file->readLine();
-                lineCount++;
-            }
-            QStringList lineSplited = line.split("  ");
-            ui->baseLatInput->setText(lineSplited[1]);
-            ui->baseLonInput->setText(lineSplited[2]);
-            ui->baseAltInput->setText(lineSplited[3]);
         }
+
+        ui->statusbar->showMessage(runningString.arg(step++).arg(nSteps));
+        QFile* file = new QFile(_savedPath + "ibge.pos");
+        file->open(QIODevice::ReadOnly | QIODevice::Text);
+        QString line;
+        unsigned int lineCount = 0;
+        while(!file->atEnd() && lineCount < 24){
+            line = file->readLine();
+            lineCount++;
+        }
+        QStringList lineSplited = line.split("  ");
+        ui->baseLatInput->setText(lineSplited[1]);
+        ui->baseLonInput->setText(lineSplited[2]);
+        ui->baseAltInput->setText(lineSplited[3]);
     }
 
     RnxToRtkp rnx2rtkp;
@@ -301,6 +309,7 @@ void Window::runRTKLIB()
     }
     cmd = rnx2rtkp.command();
 
+    ui->statusbar->showMessage(runningString.arg(step++).arg(nSteps));
     if(runCmd(cmd) != 0) {
         ui->output->append("Error !");
         ui->statusbar->showMessage("ERRO !");
@@ -313,6 +322,7 @@ void Window::runRTKLIB()
     pos2kml.setOutputPath(_savedPath);
     cmd = pos2kml.command();
 
+    ui->statusbar->showMessage(runningString.arg(step++).arg(nSteps));
     if(runCmd(cmd) != 0) {
         ui->output->append("Error !");
         ui->statusbar->showMessage("ERRO !");
