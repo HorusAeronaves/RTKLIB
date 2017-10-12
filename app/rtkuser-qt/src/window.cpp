@@ -77,12 +77,13 @@ Window::Window(QWidget *parent) :
     connect(ui->hoverRawButton, &QPushButton::clicked, [=](){
         QString fileName = \
             QFileDialog::getOpenFileName(this, tr("Select a .UBX file"), \
-                QDir::homePath(), \
+                _findFolder.isEmpty() ? QDir::homePath() : QDir(_findFolder).absolutePath(), \
                 QStringLiteral("*.UBX"));
         if (fileName.isNull()) {
             QMessageBox::critical(this, tr("Error"), tr("No file selected !"));
         } else {
             ui->hoverRawInput->setText(QDir::toNativeSeparators(fileName));
+            _findFolder = QDir(fileName).absolutePath();
         }
     });
 
@@ -90,12 +91,13 @@ Window::Window(QWidget *parent) :
     connect(ui->baseRawButton, &QPushButton::clicked, [=](){
         QString fileName = \
             QFileDialog::getOpenFileName(this, tr("Select a .UBX file"), \
-                QDir::homePath(), \
+                _findFolder.isEmpty() ? QDir::homePath() : QDir(_findFolder).absolutePath(), \
                 QStringLiteral("*.UBX"));
         if (fileName.isNull()) {
             QMessageBox::critical(this, tr("Error"), tr("No file selected !"));
         } else {
             ui->baseRawInput->setText(QDir::toNativeSeparators(fileName));
+            _findFolder = QDir(fileName).absolutePath();
         }
     });
 
@@ -103,12 +105,13 @@ Window::Window(QWidget *parent) :
     connect(ui->configButton, &QPushButton::clicked, [=](){
         QString fileName = \
             QFileDialog::getOpenFileName(this, tr("Select a .conf file"), \
-                QDir::homePath(), \
+                _findFolder.isEmpty() ? QDir::homePath() : QDir(_findFolder).absolutePath(), \
                 QStringLiteral("*.conf"));
         if (fileName.isNull()) {
             QMessageBox::critical(this, tr("Error"), tr("No file selected !"));
         } else {
             ui->configInput->setText(QDir::toNativeSeparators(fileName));
+            _findFolder = QDir(fileName).absolutePath();
         }
     });
 
@@ -116,12 +119,13 @@ Window::Window(QWidget *parent) :
     connect(ui->IBGEObsButton, &QPushButton::clicked, [=](){
         QString fileName = \
             QFileDialog::getOpenFileName(this, tr("Select a .17o/.o file"), \
-                QDir::homePath(), \
+                _findFolder.isEmpty() ? QDir::homePath() : QDir(_findFolder).absolutePath(), \
                 QStringLiteral("*.17o *.o"));
         if (fileName.isNull()) {
             QMessageBox::critical(this, tr("Error"), tr("No file selected !"));
         } else {
             ui->IBGEObsInput->setText(QDir::toNativeSeparators(fileName));
+            _findFolder = QDir(fileName).absolutePath();
         }
     });
 
@@ -129,12 +133,13 @@ Window::Window(QWidget *parent) :
     connect(ui->IBGENavButton, &QPushButton::clicked, [=](){
         QString fileName = \
             QFileDialog::getOpenFileName(this, tr("Select a .17n/.n file"), \
-                QDir::homePath(), \
+                _findFolder.isEmpty() ? QDir::homePath() : QDir(_findFolder).absolutePath(), \
                 QStringLiteral("*.17n *.n"));
         if (fileName.isNull()) {
             QMessageBox::critical(this, tr("Error"), tr("No file selected !"));
         } else {
             ui->IBGENavInput->setText(QDir::toNativeSeparators(fileName));
+            _findFolder = QDir(fileName).absolutePath();
         }
     });
 
@@ -142,12 +147,13 @@ Window::Window(QWidget *parent) :
     connect(ui->IBGEConfigButton, &QPushButton::clicked, [=](){
         QString fileName = \
             QFileDialog::getOpenFileName(this, tr("Select a .conf file"), \
-                QDir::homePath(), \
+                _findFolder.isEmpty() ? QDir::homePath() : QDir(_findFolder).absolutePath(), \
                 QStringLiteral("*.conf"));
         if (fileName.isNull()) {
             QMessageBox::critical(this, tr("Error"), tr("No file selected !"));
         } else {
             ui->configIBGEInput->setText(QDir::toNativeSeparators(fileName));
+            _findFolder = QDir(fileName).absolutePath();
         }
     });
 
@@ -155,11 +161,12 @@ Window::Window(QWidget *parent) :
     connect(ui->basePositionButton, &QPushButton::clicked, [=](){
         QString fileName = \
             QFileDialog::getOpenFileName(this, tr("Select a .csv file"), \
-                QDir::homePath(), \
+                _findFolder.isEmpty() ? QDir::homePath() : QDir(_findFolder).absolutePath(), \
                 QStringLiteral("*.csv"));
         if (fileName.isNull()) {
             QMessageBox::critical(this, tr("Error"), tr("No file selected !"));
         } else {
+            _findFolder = QDir(fileName).absolutePath();
             //TODO
             qDebug() << "TODO";
         }

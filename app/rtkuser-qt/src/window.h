@@ -22,4 +22,5 @@ private:
 
     QString _savedPath;
     QString _folderName;
+    QString _findFolder;
 };
