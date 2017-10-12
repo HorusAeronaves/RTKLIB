@@ -201,6 +201,7 @@ int Window::runCmd(QString cmd)
     while(!process->waitForFinished(100)) {
         QCoreApplication::processEvents();
         process->readAllStandardError();
+        process->readAllStandardOutput();
     }
     ui->output->moveCursor(QTextCursor::End);
     QCoreApplication::processEvents();
