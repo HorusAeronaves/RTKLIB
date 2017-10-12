@@ -195,13 +195,13 @@ int Window::runCmd(QString cmd)
 {
     qDebug() << "Running";
     QProcess *process = new QProcess();
+    process->setStandardOutputFile(QProcess::nullDevice());
+    process->setStandardErrorFile(QProcess::nullDevice());
     ui->output->append(QStringLiteral("Running %1").arg(cmd));
     ui->output->append("");
     process->start(cmd);
     while(!process->waitForFinished(100)) {
         QCoreApplication::processEvents();
-        process->readAllStandardError();
-        process->readAllStandardOutput();
     }
     ui->output->moveCursor(QTextCursor::End);
     QCoreApplication::processEvents();
