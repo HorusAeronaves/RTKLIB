@@ -276,7 +276,7 @@
            <string/>
           </property>
           <property name="placeholderText">
-           <string>Lat</string>
+           <string>Lat (DD)</string>
           </property>
          </widget>
         </item>
@@ -286,7 +286,7 @@
            <bool>false</bool>
           </property>
           <property name="placeholderText">
-           <string>Lon</string>
+           <string>Lon (DD)</string>
           </property>
          </widget>
         </item>
@@ -296,7 +296,7 @@
            <bool>false</bool>
           </property>
           <property name="placeholderText">
-           <string>Alt</string>
+           <string>Alt (m)</string>
           </property>
          </widget>
         </item>
