@@ -220,8 +220,8 @@ void Window::runRTKLIB()
 {
     QString runningString = QStringLiteral("Running ... \t|\t%1 / %2");
 
-    QString baseAltInput = QString::number(ui->baseAltInput->text().toFloat() + ui->AntAltInput->text().toFloat());
-    if(ui->checkBaseRtk->isChecked()) {
+    QString baseAltInput = QString::number(ui->baseAltInput->text().split("+")[0].toFloat() + ui->AntAltInput->text().toFloat());
+    if(ui->checkBaseRtk->isChecked() && !ui->baseAltInput->text().contains("+")) {
         ui->baseAltInput->setText(ui->baseAltInput->text() + " + " + ui->AntAltInput->text());
     }
 
