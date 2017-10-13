@@ -219,6 +219,12 @@ int Window::runCmd(QString cmd)
 void Window::runRTKLIB()
 {
     QString runningString = QStringLiteral("Running ... \t|\t%1 / %2");
+
+    QString baseAltInput = QString::number(ui->baseAltInput->text().toFloat() + ui->AntAltInput->text().toFloat());
+    if(ui->checkBaseRtk->isChecked()) {
+        ui->baseAltInput->setText(ui->baseAltInput->text() + " + " + ui->AntAltInput->text());
+    }
+
     uint step = 1;
     uint nSteps = 4 + ui->checkIBGE->isChecked()*2;
     //TODO
@@ -311,7 +317,7 @@ void Window::runRTKLIB()
     rnx2rtkp.setOutputFile("out");
     rnx2rtkp.setOutputPath(_savedPath);
     if(ui->checkBaseRtk->isChecked() || ui->checkIBGE->isChecked()) {
-        rnx2rtkp.setBasePosition(ui->baseLatInput->text(), ui->baseLonInput->text(), ui->baseAltInput->text());
+        rnx2rtkp.setBasePosition(ui->baseLatInput->text(), ui->baseLonInput->text(), baseAltInput);
     }
     cmd = rnx2rtkp.command();
 
