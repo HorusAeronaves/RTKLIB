@@ -226,8 +226,7 @@ void Window::runRTKLIB()
     ui->statusbar->showMessage("Running ...");
     QString path = qApp->applicationDirPath();
     _folderName = QDir::toNativeSeparators(QDateTime::currentDateTime().toString(QStringLiteral("yyyyMMdd-hhmmsszzz")));
-    _savedPath = path + QStringLiteral("/CUI-") + _folderName + "/";
-    _savedPath = QDir::toNativeSeparators(_savedPath);
+    _savedPath = QDir::toNativeSeparators(qApp->applicationDirPath() + QStringLiteral("/CUI-") + _folderName + "/");
     path = QDir::toNativeSeparators(path + "/");
     QString cmd;
 
@@ -352,6 +351,7 @@ void Window::runRTKLIB()
     for(const auto file : files) {
         QFile(QDir::toNativeSeparators(_savedPath + "/" + file)).copy(QDir::toNativeSeparators(pathToSave + "/" + _folderName + "/" + QFile(file).fileName()));
     }
+    grab().save(QDir(_savedPath).absoluteFilePath("image.png"));
     ui->statusbar->showMessage("Done ! (Saved in " + QDir::toNativeSeparators(pathToSave + "/" + _folderName + "/") + ")");
 }
 
