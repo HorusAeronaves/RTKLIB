@@ -45,6 +45,9 @@ build_script:
   - set PATH=C:\MinGW\bin;%PATH%
   - cd C:\MinGW\bin
   - ls
+  - cd "%APPVEYOR_BUILD_FOLDER%\lib\iers\gcc"
+  - mingw32-make CC=gcc
+  - ls
   - cd "%APPVEYOR_BUILD_FOLDER%\app\convbin\gcc"
   - gcc --version
   - mingw32-make CC=gcc
