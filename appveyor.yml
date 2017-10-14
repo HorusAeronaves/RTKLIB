@@ -45,6 +45,7 @@ build_script:
   - set PATH=C:\MinGW\bin;%PATH%
   - cd C:\MinGW\bin
   - ls
+  - Get-ChildItem -Path C:\ fortran -Recurse
 
   - cd "%APPVEYOR_BUILD_FOLDER%\lib\iers\gcc"
   - ls
