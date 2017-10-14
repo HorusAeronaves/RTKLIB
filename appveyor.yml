@@ -77,6 +77,7 @@ after_build:
   # Add a link to the build output within the source directory. This is needed because AppVeyor does
   # not support extracting artifacts from out-of-source build directories. See 'artifacts' below.
   - dir /b /s *.exe
+  - appveyor DownloadFile https://github.com/tomojitakasu/RTKLIB_bin/raw/rtklib_2.4.3/bin/rnx2rtkp.exe -FileName rnx2rtkp_ibge.exe
   - mkdir deploy
   - copy %APPVEYOR_BUILD_FOLDER%-build\%CONFIGURATION%\RTKUSER.exe deploy\RTKUSER.exe
   - copy %APPVEYOR_BUILD_FOLDER%-build\%CONFIGURATION%\configs.conf deploy\configs.conf
@@ -84,6 +85,7 @@ after_build:
   - copy %APPVEYOR_BUILD_FOLDER%-build\%CONFIGURATION%\convbin.exe deploy\convbin.exe
   - copy %APPVEYOR_BUILD_FOLDER%-build\%CONFIGURATION%\rnx2rtkp.exe deploy\rnx2rtkp.exe
   - copy %APPVEYOR_BUILD_FOLDER%-build\%CONFIGURATION%\pos2kml.exe deploy\pos2kml.exe
+  - copy rnx2rtkp_ibge.exe deploy\rnx2rtkp_ibge.exe
   - windeployqt --release deploy/RTKUSER.exe
   #- windeployqt --release deploy/convbin.exe not a qt app
   - for %%I in (%VCLIBS%) do copy %VCLIBDIR%\%%I deploy\
