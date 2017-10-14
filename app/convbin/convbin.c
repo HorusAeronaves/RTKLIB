@@ -36,7 +36,7 @@
 *-----------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/signal.h>
+#include <signal.h>
 #include <string.h>
 #include <stdarg.h>
 #include "rtklib.h"
@@ -601,7 +601,6 @@ int main(int argc, char **argv)
 
     signal(SIGINT, sigshut); /* keyboard interrupt */
     signal(SIGTERM, sigshut); /* external shutdown signal */
-    signal(SIGUSR2, sigshut);
 
     stat=convbin(format,&opt,ifile,ofile,dir,&intflg,&stream);
 
