@@ -10,9 +10,9 @@ LDLIBS  = ../../../lib/iers/gcc/iers.a -lgfortran -lm -lrt -lpthread
 CFLAGS  = -Wall -O3 -ansi -pedantic -I$(SRC) $(OPTS) -g
 
 ifeq ($(OS), Linux)
-	LDLIBS = -lm -lrt
+	LDLIBS += -lm -lrt
 else
-	LDLIBS = -lm -lwinmm -lws2_32
+	LDLIBS += -lm -lwinmm -lws2_32
 endif
 
 #CFLAGS  = -Wall -O3 -ansi -pedantic -Wno-unused-but-set-variable -I$(SRC) -DLAPACK $(OPTS)
