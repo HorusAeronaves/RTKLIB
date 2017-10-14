@@ -36,7 +36,7 @@
 *-----------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <stdlib.h>
-#include <signal.h>
+#include <sys/signal.h>
 #include <string.h>
 #include <stdarg.h>
 #include "rtklib.h"
