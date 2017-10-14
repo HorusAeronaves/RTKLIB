@@ -42,7 +42,8 @@ before_build:
 
 build_script:
   - set PATH=%PATH:C:\Program Files (x86)\Git\bin;=%
-  - set PATH=C:\MinGW\bin;%PATH%
+  #- set PATH=C:\MinGW\bin;%PATH%
+  - set PATH=C:\Qt\Tools\mingw530_32\bin\;%PATH%
   - cd C:\MinGW\bin
   - ls
   - dir /s/b "C:\*fortran*"
