@@ -46,7 +46,7 @@
 #include <time.h>
 #include <ctype.h>
 #include <assert.h>
-#ifdef WIN32
+#ifndef __linux__
 #include <winsock2.h>
 #include <windows.h>
 #else
