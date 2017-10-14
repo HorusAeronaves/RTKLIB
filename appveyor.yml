@@ -46,7 +46,7 @@ build_script:
   - set PATH=C:\Qt\Tools\mingw530_32\bin\;%PATH%
   - cd C:\MinGW\bin
   - ls
-  - dir /s/b "C:\*fortran*"
+  #- dir /s/b "C:\*fortran*"
 
   - cd "%APPVEYOR_BUILD_FOLDER%\lib\iers\gcc"
   - ls
