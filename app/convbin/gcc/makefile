@@ -12,9 +12,9 @@ OPTIONS = -DTRACE -DENAGLO -DENAQZS -DENAGAL -DENACMP -DENAIRN -DNFREQ=7 -DNEXOB
 CFLAGS_CMN  = -ansi -pedantic -Wall -Wno-unused-but-set-variable $(INCLUDE) $(OPTIONS) -g
 
 ifeq ($(OS), Linux)
-	LDLIBS = -lm -lrt
+	LDLIBS = -lm -lrt -lpthread
 else
-	LDLIBS = -lm -lwinmm
+	LDLIBS = -lm -lwinmm -lpthread
 endif
 
 OBJS = convbin.o stream.o rtkcmn.o rinex.o sbas.o preceph.o rcvraw.o convrnx.o \
