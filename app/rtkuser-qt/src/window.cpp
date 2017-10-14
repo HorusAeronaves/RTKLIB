@@ -300,10 +300,10 @@ void Window::runRTKLIB()
             line = file->readLine();
             lineCount++;
         }
-        QStringList lineSplited = line.split("  ");
-        ui->baseLatInput->setText(lineSplited[1]);
-        ui->baseLonInput->setText(lineSplited[2]);
-        ui->baseAltInput->setText(lineSplited[3]);
+        QStringList lineSplited = line.simplified().split("  ");
+        ui->baseLatInput->setText(lineSplited[2]);
+        ui->baseLonInput->setText(lineSplited[3]);
+        ui->baseAltInput->setText(lineSplited[4]);
     }
 
     RnxToRtkp rnx2rtkp;
