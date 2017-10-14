@@ -273,6 +273,7 @@ void Window::runRTKLIB()
     if(ui->checkIBGE->isChecked()) {
         RnxToRtkp rnx2rtkp;
         rnx2rtkp.setBinPath(path);
+        rnx2rtkp.setIbge(true);
         QString configFile = ui->checkIBGEConfig->isChecked() ? \
             ui->configIBGEInput->text() : path + "configs2.conf";
         rnx2rtkp.setConfigurationFile(configFile);

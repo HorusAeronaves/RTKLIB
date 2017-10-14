@@ -10,6 +10,7 @@ RnxToRtkp::RnxToRtkp() :
     _basePositionAdded(false),
     _configurationFile("configs.conf"),
     _elevantionMask(15),
+    _ibge(false),
     _navFile("output.nav"),
     _obsFile("output.obs"),
     _outputFile("output.pos"),
@@ -28,9 +29,16 @@ QString RnxToRtkp::command()
     if(_basePositionAdded) {
         basePos = QStringLiteral("-l %1 %2 %3").arg(_baseLat, _baseLon, _baseAlt);
     }
+    QString elevation = QString::number(_elevantionMask);
+    if(_ibge) {
+        return QStringLiteral("\"%1rnx2rtkp_ibge\" %8 -m %9 -k \"%2\" \"%3\" \"%4\" \"%5\" -o \"%6%7.pos\"") \
+        .arg(_path, _configurationFile, _inputFile, _obsFile, _navFile, _outputPath, _outputFile, basePos \
+        , elevation);
+    }
+
     return QStringLiteral("\"%1rnx2rtkp\" %8 -m %9 -k \"%2\" \"%3\" \"%4\" \"%5\" -o \"%6%7.pos\"") \
-    .arg(_path, _configurationFile, _inputFile, _obsFile, _navFile, _outputPath, _outputFile, basePos \
-    , QString::number(_elevantionMask));
+        .arg(_path, _configurationFile, _inputFile, _obsFile, _navFile, _outputPath, _outputFile, basePos \
+        , elevation);
 }
 
 void RnxToRtkp::setBasePosition(QString lat, QString lon, QString alt)
@@ -57,6 +65,14 @@ bool RnxToRtkp::setConfigurationFile(QString file)
 void RnxToRtkp::setElevationMask(uint mask)
 {
     _elevantionMask = mask;
+}
+
+bool RnxToRtkp::setIbge(bool runIbge)
+{
+#ifdef Q_OS_WIN
+    _ibge = runIbge;
+#endif
+    return _ibge;
 }
 
 bool RnxToRtkp::setInputFile(QString file)

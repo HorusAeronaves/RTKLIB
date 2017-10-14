@@ -16,6 +16,7 @@ public:
     bool setBinPath(QString path);
     bool setConfigurationFile(QString file);
     void setElevationMask(uint mask);
+    bool setIbge(bool runIbge);
     bool setInputFile(QString file);
     bool setNavFile(QString file);
     bool setObsFile(QString file);
@@ -29,6 +30,7 @@ private:
     bool _basePositionAdded;
     QString _configurationFile;
     uint _elevantionMask;
+    bool _ibge;
     QString _inputFile;
     QString _navFile;
     QString _obsFile;
