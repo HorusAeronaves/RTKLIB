@@ -77,7 +77,7 @@ after_build:
   # Add a link to the build output within the source directory. This is needed because AppVeyor does
   # not support extracting artifacts from out-of-source build directories. See 'artifacts' below.
   - dir /b /s *.exe
-  - iwr https://github.com/tomojitakasu/RTKLIB_bin/raw/rtklib_2.4.3/bin/rnx2rtkp.exe -OutFile rnx2rtkp_ibge.exe
+  - Start-FileDownload 'https://github.com/tomojitakasu/RTKLIB_bin/raw/rtklib_2.4.3/bin/rnx2rtkp.exe' -FileName rnx2rtkp_ibge.exe
   - mkdir deploy
   - copy %APPVEYOR_BUILD_FOLDER%-build\%CONFIGURATION%\RTKUSER.exe deploy\RTKUSER.exe
   - copy %APPVEYOR_BUILD_FOLDER%-build\%CONFIGURATION%\configs.conf deploy\configs.conf
