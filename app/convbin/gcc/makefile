@@ -14,7 +14,7 @@ CFLAGS_CMN  = -ansi -pedantic -Wall -Wno-unused-but-set-variable $(INCLUDE) $(OP
 ifeq ($(OS), Linux)
 	LDLIBS = -lm -lrt -lpthread
 else
-	LDLIBS = -lm -lwinmm -lpthread
+	LDLIBS = -lm -lwinmm -lpthread -lws2_32
 endif
 
 OBJS = convbin.o stream.o rtkcmn.o rinex.o sbas.o preceph.o rcvraw.o convrnx.o \
