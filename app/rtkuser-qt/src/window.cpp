@@ -253,6 +253,8 @@ void Window::runRTKLIB()
         return;
     }
 
+    countEvents(_savedPath + "rover.obs");
+
     // Base convbin
     convbin.setBinPath(path);
     convbin.setLogFile(ui->baseRawInput->text());
@@ -362,6 +364,23 @@ void Window::runRTKLIB()
     }
     grab().save(QDir(_savedPath).absoluteFilePath("image.png"));
     ui->statusbar->showMessage("Done ! (Saved in " + QDir::toNativeSeparators(pathToSave + "/" + _folderName + "/") + ")");
+}
+
+void Window::countEvents(QString obs)
+{
+    QFile* file = new QFile(obs);
+    file->open(QIODevice::ReadOnly | QIODevice::Text);
+    QString line;
+    unsigned int lineCount = 0;
+
+    QRegExp rx("( 5  0\n)$");
+    while(!file->atEnd()){
+        line = file->readLine();
+        lineCount += line.contains(rx);
+    }
+
+    ui->output->append("Total events: <b>" + QString::number(lineCount) + "</b>");
+    ui->output->append(QString());
 }
 
 Window::~Window()
