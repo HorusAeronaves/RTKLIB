@@ -260,7 +260,7 @@ void Window::runRTKLIB()
     convbin.setLogFile(ui->baseRawInput->text());
     convbin.setLogFormatType("ubx");
     convbin.setOutputFile("base");
-    convbin.setDelta(0.0, 0.0, QString(ui->AntAltInput->text()).toFloat());
+    convbin.setDelta(0.0, 0.0, ui->AntAltInput->text().replace(",", ".").toFloat());
     convbin.setOutputPath(_savedPath);
     convbin.setRinexVersion("3.03");
     cmd = convbin.command();
