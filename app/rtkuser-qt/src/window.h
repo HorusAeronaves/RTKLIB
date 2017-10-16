@@ -15,6 +15,7 @@ public:
     Window(QWidget* parent = nullptr);
     ~Window();
 
+    void countEvents(QString obs);
     int runCmd(QString cmd);
     void runRTKLIB();
 private:
