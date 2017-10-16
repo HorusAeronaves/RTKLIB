@@ -96,3 +96,6 @@ after_build:
 artifacts:
   - path: HORUS_RTKUSER_%commit%.zip
     name: RTKUSER
+
+on_finish:
+  - ps: Add-AppveyorMessage -Message "https://ci.appveyor.com/api/buildjobs/$env:APPVEYOR_JOB_ID/artifacts/HORUS_RTKUSER_$env:commit.zip"
