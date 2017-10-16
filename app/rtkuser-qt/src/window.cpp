@@ -304,6 +304,8 @@ void Window::runRTKLIB()
         ui->baseLatInput->setText(lineSplited[2]);
         ui->baseLonInput->setText(lineSplited[3]);
         ui->baseAltInput->setText(lineSplited[4]);
+        baseAltInput = QString::number(ui->baseAltInput->text().split("+")[0].replace(",", ".").toFloat() + ui->AntAltInput->text().replace(",", ".").toFloat());
+        ui->baseAltInput->setText(ui->baseAltInput->text().replace(",", ".") + " + " + ui->AntAltInput->text().replace(",", "."));
     }
 
     RnxToRtkp rnx2rtkp;
